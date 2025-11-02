@@ -110,3 +110,5 @@ ENV GIT_HASH=$git_hash
 ENV SERVER_RUN_MODE=DOCKERIZED
 
 EXPOSE 8080
+
+CMD ["npm", "run", "start"]
