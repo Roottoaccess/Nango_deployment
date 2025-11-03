@@ -85,8 +85,8 @@ if (pubsubConnect.isErr()) {
     logger.error(`PubSub: Failed to connect to transport: ${pubsubConnect.error.message}`);
 }
 
-// THIS LINE IS UPDATED:
-const port = process.env['PORT'] || 10000;
+// Use PORT environment variable for Render deployment
+const port = process.env['PORT'] || process.env['SERVER_PORT'] || process.env['NANGO_PORT'] || 3003;
 
 server.listen(port, () => {
     logger.info(`✅ Nango Server with version ${NANGO_VERSION} is listening on port ${port}. OAuth callback URL: ${getGlobalOAuthCallbackUrl()}`);
