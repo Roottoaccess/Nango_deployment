@@ -23,9 +23,13 @@ import { pubsub } from './pubsub.js';
 import { router } from './routes.js';
 import migrate from './utils/migrate.js';
 import type { WebSocket } from 'ws';
+
+// ...other imports remain unchanged...
+
 const { NANGO_MIGRATE_AT_START = 'true' } = process.env;
 const logger = getLogger('Server');
 initSentry({ dsn: envs.SENTRY_DSN, applicationName: envs.NANGO_DB_APPLICATION_NAME, hash: envs.GIT_HASH });
+
 process.on('unhandledRejection', (reason) => {
     logger.error('Received unhandledRejection...', reason);
     report(reason);
@@ -45,12 +49,14 @@ app.use('/', router);
 const server = http.createServer(app);
 server.keepAliveTimeout = envs.NANGO_SERVER_KEEP_ALIVE_TIMEOUT;
 server.headersTimeout = envs.NANGO_SERVER_KEEP_ALIVE_TIMEOUT + 1000; //needs to be longer than the keep alive timeout to avoid premature disconnections
+
 // -------
 // Websocket
 const wss = new WebSocketServer({ server, path: getWebsocketsPath() });
 wss.on('connection', async (ws: WebSocket) => {
     await publisher.subscribe(ws);
 });
+
 // Set to 'false' to disable migration at startup. Appropriate when you
 // have multiple replicas of the service running and you do not want them
 // all trying to migrate the database at the same time. In this case, the
@@ -66,6 +72,7 @@ if (NANGO_MIGRATE_AT_START === 'true') {
 } else {
     logger.info('Not migrating database');
 }
+
 // Preload providers
 getProviders();
 refreshConnectionsCron();
@@ -77,7 +84,10 @@ const pubsubConnect = await pubsub.connect();
 if (pubsubConnect.isErr()) {
     logger.error(`PubSub: Failed to connect to transport: ${pubsubConnect.error.message}`);
 }
-const port = process.env.PORT || 8080;
+
+// THIS LINE IS UPDATED:
+const port = process.env['PORT'] || 8080;
+
 server.listen(port, () => {
     logger.info(`✅ Nango Server with version ${NANGO_VERSION} is listening on port ${port}. OAuth callback URL: ${getGlobalOAuthCallbackUrl()}`);
     logger.info(
