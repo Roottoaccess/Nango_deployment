@@ -22,6 +22,10 @@ router.use(...securityMiddlewares());
 
 // -------
 // No auth routes
+router.get('/', (_, res) => {
+    const fp = path.join(dirname(), webappBuildPath, 'index.html');
+    res.sendFile(fp, { headers: { 'Cache-Control': 'no-cache, private' } });
+});
 router.get('/health', (_, res) => {
     res.status(200).send({ result: 'ok' });
 });
