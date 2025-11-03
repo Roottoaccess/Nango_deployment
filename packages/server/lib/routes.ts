@@ -22,7 +22,7 @@ router.use(...securityMiddlewares());
 
 // -------
 // No auth routes
-router.get('/', (req, res) => {
+router.get('/', (_, res) => {
     res.status(200).send({
         status: 'Nango server is running',
         environment: process.env.NODE_ENV || 'development',
