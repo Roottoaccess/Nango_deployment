@@ -86,7 +86,7 @@ if (pubsubConnect.isErr()) {
 }
 
 // THIS LINE IS UPDATED:
-const port = process.env['PORT'] || 8080;
+const port = process.env['PORT'] || 10000;
 
 server.listen(port, () => {
     logger.info(`✅ Nango Server with version ${NANGO_VERSION} is listening on port ${port}. OAuth callback URL: ${getGlobalOAuthCallbackUrl()}`);
