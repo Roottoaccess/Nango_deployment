@@ -22,10 +22,27 @@ router.use(...securityMiddlewares());
 
 // -------
 // No auth routes
-router.get('/', (_, res) => {
+router.get('/', (req, res) => {
+    res.status(200).send({
+        status: 'Nango server is running',
+        environment: process.env.NODE_ENV || 'development',
+        serverUrl: process.env.NANGO_SERVER_URL || 'not set',
+        publicServerUrl: process.env.NANGO_PUBLIC_SERVER_URL || 'not set',
+        routes: {
+            api: '/api/v1',
+            health: '/health',
+            webapp: '/app'
+        },
+        message: 'Please navigate to /app to access the Nango dashboard'
+    });
+});
+
+// Redirect to webapp
+router.get('/app', (_, res) => {
     const fp = path.join(dirname(), webappBuildPath, 'index.html');
     res.sendFile(fp, { headers: { 'Cache-Control': 'no-cache, private' } });
 });
+
 router.get('/health', (_, res) => {
     res.status(200).send({ result: 'ok' });
 });
